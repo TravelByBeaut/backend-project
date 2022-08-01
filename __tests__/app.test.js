@@ -24,7 +24,7 @@ describe("getTopics", () => {
   });
   test("status:404 sends error message when given a valid but non-existent address", () => {
     return request(app)
-      .get("/api/topics/news")
+      .get("/api/topicss")
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("Invalid address");
