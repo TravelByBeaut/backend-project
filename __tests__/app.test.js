@@ -2,7 +2,7 @@ const request = require("supertest");
 const app = require("../db/app");
 const data = require("../db/data/test-data");
 const db = require("../db/connection");
-const getTopics = require("../controllers/news.controller");
+const controller = require("../controllers/news.controller");
 const seed = require("../db/seeds/seed");
 
 beforeEach(() => seed(data));
@@ -63,6 +63,25 @@ describe("getArticleById", () => {
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe("Bad request");
+      });
+  });
+});
+describe("updateVotes", () => {
+  test("status: 200 and responds with the updated votes in the article", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .expect(200)
+      .send({ inc_votes: 1 })
+      .then(({ body: { article } }) => {
+        expect(article.votes).toBe(101);
+      });
+  });
+  test("status:404 sends error message when given a valid but non-existent address", () => {
+    return request(app)
+      .get("/api/articles/1500")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid address");
       });
   });
 });
