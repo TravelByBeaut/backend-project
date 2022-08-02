@@ -3,6 +3,7 @@ const {
   getTopics,
   getArticleById,
   updateVotes,
+  getUsers,
 } = require("../controllers/news.controller");
 
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.json());
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.patch("/api/articles/:article_id", updateVotes);
+app.get("/api/users", getUsers);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Invalid address" });

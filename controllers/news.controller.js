@@ -1,4 +1,9 @@
-const { topicData, articleById, changeVote } = require("../models/news.model");
+const {
+  topicData,
+  articleById,
+  changeVote,
+  userData,
+} = require("../models/news.model");
 
 exports.getTopics = (req, res, next) => {
   topicData().then((data) => {
@@ -7,7 +12,7 @@ exports.getTopics = (req, res, next) => {
 };
 
 exports.getArticleById = (req, res, next) => {
-  return articleById(req.params.article_id)
+  articleById(req.params.article_id)
     .then((article) => {
       res.send({ article });
     })
@@ -24,4 +29,10 @@ exports.updateVotes = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.getUsers = (req, res, next) => {
+  userData().then((data) => {
+    res.status(200).send({ data });
+  });
 };

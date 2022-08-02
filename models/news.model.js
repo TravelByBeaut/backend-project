@@ -31,3 +31,9 @@ exports.changeVote = (id, num) => {
       return rows[0];
     });
 };
+
+exports.userData = () => {
+  return db.query(`SELECT * FROM users;`).then(({ rows: users }) => {
+    return users;
+  });
+};

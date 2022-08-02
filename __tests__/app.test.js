@@ -94,3 +94,26 @@ describe("updateVotes", () => {
       });
   });
 });
+describe("getUsers", () => {
+  test("status: 200 and responds with array of objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { data } }) => {
+        expect(data).toHaveLength(4);
+        data.forEach((user) => {
+          expect(user.username).toEqual(expect.any(String));
+          expect(user.name).toEqual(expect.any(String));
+          expect(user.avatar_url).toEqual(expect.any(String));
+        });
+      });
+  });
+  test("status:404 sends error message when given a valid but non-existent address", () => {
+    return request(app)
+      .get("/api/user")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Invalid address");
+      });
+  });
+});
