@@ -25,6 +25,9 @@ exports.changeVote = (id, num) => {
       [id, num]
     )
     .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Invalid address" });
+      }
       return rows[0];
     });
 };

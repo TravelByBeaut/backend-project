@@ -2,7 +2,6 @@ const request = require("supertest");
 const app = require("../db/app");
 const data = require("../db/data/test-data");
 const db = require("../db/connection");
-const controller = require("../controllers/news.controller");
 const seed = require("../db/seeds/seed");
 
 beforeEach(() => seed(data));
@@ -76,17 +75,19 @@ describe("updateVotes", () => {
         expect(article.votes).toBe(101);
       });
   });
-  test("status:404 sends error message when given a valid but non-existent address", () => {
+  test("status:404 sends error message when given a valid but non-existent article_id", () => {
     return request(app)
-      .patch("/api/article/1")
+      .patch("/api/articles/20")
+      .send({ inc_votes: 1 })
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("Invalid address");
       });
   });
-  test("status:400 sends error message when given an invalid address", () => {
+  test("status:400 sends error message when increasing vote by a string instead of a number", () => {
     return request(app)
-      .patch("/api/articles/vote")
+      .patch("/api/articles/1")
+      .send({ inc_votes: "llama" })
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe("Bad request");
