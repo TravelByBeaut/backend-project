@@ -17,7 +17,11 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.updateVotes = (req, res, next) => {
-  changeVote(req.params.article_id, req.body.inc_votes).then((article) => {
-    res.send({ article });
-  });
+  changeVote(req.params.article_id, req.body.inc_votes)
+    .then((article) => {
+      res.send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
