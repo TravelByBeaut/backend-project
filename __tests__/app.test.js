@@ -2,7 +2,7 @@ const request = require("supertest");
 const app = require("../db/app");
 const data = require("../db/data/test-data");
 const db = require("../db/connection");
-const getTopics = require("../db/controllers/news.controller");
+const getTopics = require("../controllers/news.controller");
 const seed = require("../db/seeds/seed");
 
 beforeEach(() => seed(data));
@@ -33,21 +33,20 @@ describe("getTopics", () => {
 });
 describe("getArticleById", () => {
   test("reponds with status: 200 and an article object", () => {
-    const id = 1;
-    const articles = {
-      article_id: id,
-      title: "Living in the shadow of a great man",
-      topic: "mitch",
-      author: "butter_bridge",
-      body: "I find this existence challenging",
-      created_at: "2020-07-09T20:11:00.000Z",
-      votes: 100,
-    };
     return request(app)
-      .get(`/api/articles/${id}`)
+      .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        expect(body.article[0]).toEqual(articles);
+        expect(body.article).toHaveLength(1);
+        body.article.forEach((article) => {
+          expect(article.article_id).toBe(1);
+          expect(article.title).toEqual(expect.any(String));
+          expect(article.topic).toEqual(expect.any(String));
+          expect(article.author).toEqual(expect.any(String));
+          expect(article.body).toEqual(expect.any(String));
+          expect(article.created_at).toEqual(expect.any(String));
+          expect(article.votes).toEqual(expect.any(Number));
+        });
       });
   });
   test("status:404 sends error message when given a valid but non-existent address", () => {
