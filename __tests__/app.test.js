@@ -76,12 +76,4 @@ describe("updateVotes", () => {
         expect(article.votes).toBe(101);
       });
   });
-  test("status:404 sends error message when given a valid but non-existent address", () => {
-    return request(app)
-      .get("/api/articles/1500")
-      .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toBe("Invalid address");
-      });
-  });
 });
