@@ -59,3 +59,20 @@ exports.articleDataByDate = () => {
       return article;
     });
 };
+
+exports.commentsById = (id) => {
+  return db
+    .query(
+      `SELECT articles.article_id, comments.* FROM articles
+  RIGHT JOIN comments ON comments.article_id = articles.article_id
+  WHERE articles.article_id=$1
+  GROUP BY articles.article_id, comments.comment_id`,
+      [id]
+    )
+    .then(({ rows: comments }) => {
+      if (comments.length === 0) {
+        return Promise.reject({ status: 404, msg: "Invalid address" });
+      }
+      return comments;
+    });
+};

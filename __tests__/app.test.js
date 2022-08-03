@@ -159,3 +159,38 @@ describe("Users", () => {
     });
   });
 });
+describe("Comments", () => {
+  describe("getCommentsById", () => {
+    test("status: 200 and resonds with an array of comments objects relating to the article_id", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          article.forEach((article) => {
+            expect(article.article_id).toEqual(expect.any(Number));
+            expect(article.comment_id).toEqual(expect.any(Number));
+            expect(article.author).toEqual(expect.any(String));
+            expect(article.body).toEqual(expect.any(String));
+            expect(article.created_at).toEqual(expect.any(String));
+            expect(article.votes).toEqual(expect.any(Number));
+          });
+        });
+    });
+    test("status: 400 when given an invalid address", () => {
+      return request(app)
+        .get("/api/articles/one/comments")
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toBe("Bad request");
+        });
+    });
+    test("status: 404 when given an valid but non-existent address", () => {
+      return request(app)
+        .get("/api/articles/100/comments")
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toBe("Invalid address");
+        });
+    });
+  });
+});
