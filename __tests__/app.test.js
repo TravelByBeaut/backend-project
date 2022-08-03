@@ -48,8 +48,15 @@ describe("Articles", () => {
             expect(article.body).toEqual(expect.any(String));
             expect(article.created_at).toEqual(expect.any(String));
             expect(article.votes).toEqual(expect.any(Number));
-            expect(article.comment_count).toEqual(expect.any(Number));
           });
+        });
+    });
+    test("200 also responds with relevant info, now including comment_count", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article[0].comment_count).toEqual(expect.any(Number));
         });
     });
     test("status:404 sends error message when given a valid but non-existent address", () => {
@@ -95,6 +102,34 @@ describe("Articles", () => {
         .expect(400)
         .then((response) => {
           expect(response.body.msg).toBe("Bad request");
+        });
+    });
+  });
+  describe("getArticles", () => {
+    test("status: 200 and responds with array of article objects", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toHaveLength(5);
+          article.forEach((article) => {
+            expect(article.article_id).toEqual(expect.any(Number));
+            expect(article.title).toEqual(expect.any(String));
+            expect(article.topic).toEqual(expect.any(String));
+            expect(article.author).toEqual(expect.any(String));
+            expect(article.body).toEqual(expect.any(String));
+            expect(article.created_at).toEqual(expect.any(String));
+            expect(article.votes).toEqual(expect.any(Number));
+            expect(article.comment_count).toEqual(expect.any(Number));
+          });
+        });
+    });
+    test("status:404 sends error message when given a valid but non-existent address", () => {
+      return request(app)
+        .get("/api/articls")
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toBe("Invalid address");
         });
     });
   });
