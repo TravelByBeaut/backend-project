@@ -3,6 +3,7 @@ const {
   articleById,
   changeVote,
   userData,
+  articleDataByDate,
 } = require("../models/news.model");
 
 exports.getTopics = (req, res, next) => {
@@ -35,4 +36,14 @@ exports.getUsers = (req, res, next) => {
   userData().then((data) => {
     res.status(200).send({ data });
   });
+};
+
+exports.getArticles = (req, res, next) => {
+  articleDataByDate()
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
