@@ -45,7 +45,7 @@ exports.userData = () => {
   });
 };
 
-exports.articleData = () => {
+exports.articleDataByDate = () => {
   return db
     .query(
       `SELECT articles.*, COUNT(comments.article_id) :: INTEGER AS comment_count 

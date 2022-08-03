@@ -3,7 +3,7 @@ const {
   articleById,
   changeVote,
   userData,
-  articleData,
+  articleDataByDate,
 } = require("../models/news.model");
 
 exports.getTopics = (req, res, next) => {
@@ -39,7 +39,7 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  articleData()
+  articleDataByDate()
     .then((article) => {
       res.status(200).send({ article });
     })
