@@ -165,14 +165,13 @@ describe("Comments", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
-        .then(({ body: { article } }) => {
-          article.forEach((article) => {
-            expect(article.article_id).toEqual(expect.any(Number));
-            expect(article.comment_id).toEqual(expect.any(Number));
-            expect(article.author).toEqual(expect.any(String));
-            expect(article.body).toEqual(expect.any(String));
-            expect(article.created_at).toEqual(expect.any(String));
-            expect(article.votes).toEqual(expect.any(Number));
+        .then(({ body: { comments } }) => {
+          comments.forEach((comment) => {
+            expect(comment.comment_id).toEqual(expect.any(Number));
+            expect(comment.author).toEqual(expect.any(String));
+            expect(comment.body).toEqual(expect.any(String));
+            expect(comment.created_at).toEqual(expect.any(String));
+            expect(comment.votes).toEqual(expect.any(Number));
           });
         });
     });
@@ -184,12 +183,12 @@ describe("Comments", () => {
           expect(response.body.msg).toBe("Bad request");
         });
     });
-    test("status: 404 when given an valid but non-existent address", () => {
+    test("status: 404 when given an valid address but no data", () => {
       return request(app)
         .get("/api/articles/100/comments")
         .expect(404)
         .then((response) => {
-          expect(response.body.msg).toBe("Invalid address");
+          expect(response.body.msg).toBe("Comments not found");
         });
     });
   });
