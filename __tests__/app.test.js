@@ -232,5 +232,23 @@ describe("Comments", () => {
           expect(response.body.msg).toEqual("Bad request");
         });
     });
+    test("status: 400 for an invalid article_id", () => {
+      return request(app)
+        .post("/api/articles/two/comments")
+        .send({ username: "icellusedkars", body: "excellent" })
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toEqual("Bad request");
+        });
+    });
+    test("status: 404 for an non-existent article_id", () => {
+      return request(app)
+        .post("/api/articles/50/comments")
+        .send({ username: "icellusedkars", body: "excellent" })
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toEqual("Article_id doesn't exist");
+        });
+    });
   });
 });

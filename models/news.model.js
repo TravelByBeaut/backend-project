@@ -86,12 +86,22 @@ exports.commentsById = (id) => {
 
 exports.createCommentById = (id, comment, username) => {
   return db
-    .query(
-      `INSERT INTO comments (article_id, body, author) 
+    .query(`SELECT * FROM articles WHERE article_id=$1`, [id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Article_id doesn't exist" });
+      }
+      return rows[0];
+    })
+    .then((rows) => {
+      return db
+        .query(
+          `INSERT INTO comments (article_id, body, author) 
     VALUES ($1, $2, $3) RETURNING *;`,
-      [id, comment, username]
-    )
-    .then(({ rows: comment }) => {
-      return comment;
+          [id, comment, username]
+        )
+        .then(({ rows: comment }) => {
+          return comment;
+        });
     });
 };
