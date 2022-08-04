@@ -111,7 +111,7 @@ describe("Articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article).toHaveLength(5);
+          expect(article).toHaveLength(12);
           article.forEach((article) => {
             expect(article.article_id).toEqual(expect.any(Number));
             expect(article.title).toEqual(expect.any(String));
@@ -155,6 +155,48 @@ describe("Users", () => {
         .expect(404)
         .then((response) => {
           expect(response.body.msg).toBe("Invalid address");
+        });
+    });
+  });
+});
+describe("Comments", () => {
+  describe("getCommentsById", () => {
+    test("status: 200 and resonds with an array of comments objects relating to the article_id", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          comments.forEach((comment) => {
+            expect(comment.comment_id).toEqual(expect.any(Number));
+            expect(comment.author).toEqual(expect.any(String));
+            expect(comment.body).toEqual(expect.any(String));
+            expect(comment.created_at).toEqual(expect.any(String));
+            expect(comment.votes).toEqual(expect.any(Number));
+          });
+        });
+    });
+    test("status: 200 and empty array when article_id exists but no comments available", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.msg).toEqual("Comments not found");
+        });
+    });
+    test("status: 400 when given an invalid address", () => {
+      return request(app)
+        .get("/api/articles/one/comments")
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toBe("Bad request");
+        });
+    });
+    test("status: 404 when given an valid address but no data", () => {
+      return request(app)
+        .get("/api/articles/100/comments")
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toBe("Article_id doesn't exist");
         });
     });
   });

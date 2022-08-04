@@ -5,6 +5,7 @@ const {
   updateVotes,
   getUsers,
   getArticles,
+  getCommentsById,
 } = require("../controllers/news.controller");
 
 const app = express();
@@ -16,6 +17,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.patch("/api/articles/:article_id", updateVotes);
 app.get("/api/users", getUsers);
 app.get("/api/articles", getArticles);
+app.get("/api/articles/:article_id/comments", getCommentsById);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Invalid address" });
