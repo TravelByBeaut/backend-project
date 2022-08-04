@@ -188,7 +188,7 @@ describe("Comments", () => {
         .get("/api/articles/100/comments")
         .expect(404)
         .then((response) => {
-          expect(response.body.msg).toBe("Comments not found");
+          expect(response.body.msg).toBe("Article_id doesn't exist");
         });
     });
   });

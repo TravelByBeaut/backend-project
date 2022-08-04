@@ -62,15 +62,25 @@ exports.articleDataByDate = () => {
 
 exports.commentsById = (id) => {
   return db
-    .query(
-      `SELECT * FROM comments
-      WHERE article_id=$1`,
-      [id]
-    )
+    .query(`SELECT * FROM articles WHERE article_id=$1`, [id])
     .then(({ rows: comments }) => {
       if (comments.length === 0) {
-        return Promise.reject({ status: 404, msg: "Comments not found" });
+        return Promise.reject({ status: 404, msg: "Article_id doesn't exist" });
       }
       return comments;
+    })
+    .then(({ rows }) => {
+      return db
+        .query(
+          `SELECT * FROM comments
+      WHERE article_id=$1`,
+          [id]
+        )
+        .then(({ rows: comments }) => {
+          if (comments.length === 0) {
+            return Promise.reject({ status: 404, msg: "Comments not found" });
+          }
+          return comments;
+        });
     });
 };
