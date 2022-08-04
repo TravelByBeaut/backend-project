@@ -45,18 +45,39 @@ exports.userData = () => {
   });
 };
 
-exports.articleDataByDate = () => {
-  return db
-    .query(
-      `SELECT articles.*, COUNT(comments.article_id) :: INTEGER AS comment_count 
-    FROM articles 
-    LEFT JOIN comments ON comments.article_id = articles.article_id
-    GROUP BY articles.article_id
-    ORDER BY created_at desc;`
-    )
-    .then(({ rows: article }) => {
-      return article;
-    });
+exports.articleDataByDate = (
+  sortby = "created_at",
+  orderby = "desc",
+  topic_filter
+) => {
+  const validSorts = [
+    "title",
+    "topic",
+    "author",
+    "body",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  const validOrders = ["ASC", "asc", "DESC", "desc"];
+  const validTopics = ["mitch", "cats"];
+
+  let query = `SELECT articles.*, COUNT(comments.article_id) :: INTEGER AS comment_count
+  FROM articles
+  LEFT JOIN comments ON comments.article_id = articles.article_id`;
+
+  if (validTopics.includes(topic_filter)) {
+    query += ` WHERE articles.topic=${topic_filter}`;
+  }
+  query += ` GROUP BY articles.article_id`;
+
+  if (validSorts.includes(sortby) && validOrders.includes(orderby)) {
+    query += ` ORDER BY ${sortby} ${orderby}`;
+  }
+
+  return db.query(query).then(({ rows: articles }) => {
+    return articles;
+  });
 };
 
 exports.commentsById = (id) => {

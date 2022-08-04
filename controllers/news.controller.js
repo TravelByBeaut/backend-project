@@ -41,7 +41,12 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  articleDataByDate()
+  // console.log(req.query.topic_filter);
+  articleDataByDate(
+    req.query.sort_by,
+    req.query.order_by,
+    req.query.topic_filter
+  )
     .then((article) => {
       res.status(200).send({ article });
     })
