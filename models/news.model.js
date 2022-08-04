@@ -51,7 +51,6 @@ exports.articleDataByDate = () => {
       `SELECT articles.*, COUNT(comments.article_id) :: INTEGER AS comment_count 
     FROM articles 
     LEFT JOIN comments ON comments.article_id = articles.article_id
-    WHERE articles.article_id=comments.article_id
     GROUP BY articles.article_id
     ORDER BY created_at desc;`
     )
@@ -63,13 +62,13 @@ exports.articleDataByDate = () => {
 exports.commentsById = (id) => {
   return db
     .query(`SELECT * FROM articles WHERE article_id=$1`, [id])
-    .then(({ rows: comments }) => {
-      if (comments.length === 0) {
+    .then(({ rows }) => {
+      if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Article_id doesn't exist" });
       }
-      return comments;
+      return rows[0];
     })
-    .then(({ rows }) => {
+    .then((rows) => {
       return db
         .query(
           `SELECT * FROM comments
@@ -78,7 +77,7 @@ exports.commentsById = (id) => {
         )
         .then(({ rows: comments }) => {
           if (comments.length === 0) {
-            return Promise.reject({ status: 404, msg: "Comments not found" });
+            return Promise.reject({ status: 200, msg: "Comments not found" });
           }
           return comments;
         });

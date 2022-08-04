@@ -111,7 +111,7 @@ describe("Articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article).toHaveLength(5);
+          expect(article).toHaveLength(12);
           article.forEach((article) => {
             expect(article.article_id).toEqual(expect.any(Number));
             expect(article.title).toEqual(expect.any(String));
@@ -173,6 +173,14 @@ describe("Comments", () => {
             expect(comment.created_at).toEqual(expect.any(String));
             expect(comment.votes).toEqual(expect.any(Number));
           });
+        });
+    });
+    test("status: 200 and empty array when article_id exists but no comments available", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.msg).toEqual("Comments not found");
         });
     });
     test("status: 400 when given an invalid address", () => {
