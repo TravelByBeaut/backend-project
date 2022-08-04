@@ -200,4 +200,37 @@ describe("Comments", () => {
         });
     });
   });
+  describe("sendCommentById", () => {
+    test("status: 201 and resonds with the posted comment", () => {
+      return request(app)
+        .post("/api/articles/2/comments")
+        .send({ username: "icellusedkars", body: "excellent" })
+        .expect(201)
+        .then(({ body: { comment } }) => {
+          comment.forEach((comment) => {
+            expect(comment.body).toBe("excellent");
+            expect(comment.article_id).toBe(2);
+            expect(comment.author).toBe("icellusedkars");
+          });
+        });
+    });
+    test("status: 400 for a missing body", () => {
+      return request(app)
+        .post("/api/articles/2/comments")
+        .send({})
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toEqual("Bad request");
+        });
+    });
+    test("status: 400 for an invalid post", () => {
+      return request(app)
+        .post("/api/articles/2/comments")
+        .send({ username: 123, body: "excellent" })
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toEqual("Bad request");
+        });
+    });
+  });
 });
