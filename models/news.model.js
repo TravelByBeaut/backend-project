@@ -61,18 +61,16 @@ exports.articleDataByDate = () => {
 };
 
 exports.commentsById = (id) => {
-  if (id) {
-    return db
-      .query(
-        `SELECT * FROM comments
+  return db
+    .query(
+      `SELECT * FROM comments
       WHERE article_id=$1`,
-        [id]
-      )
-      .then(({ rows: comments }) => {
-        if (comments.length === 0) {
-          return Promise.reject({ status: 404, msg: "Comments not found" });
-        }
-        return comments;
-      });
-  }
+      [id]
+    )
+    .then(({ rows: comments }) => {
+      if (comments.length === 0) {
+        return Promise.reject({ status: 404, msg: "Comments not found" });
+      }
+      return comments;
+    });
 };
