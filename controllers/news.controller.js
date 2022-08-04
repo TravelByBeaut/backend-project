@@ -5,6 +5,7 @@ const {
   userData,
   articleDataByDate,
   commentsById,
+  createCommentById,
 } = require("../models/news.model");
 
 exports.getTopics = (req, res, next) => {
@@ -53,6 +54,16 @@ exports.getCommentsById = (req, res, next) => {
   commentsById(req.params.article_id)
     .then((comments) => {
       res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.sendCommentById = (req, res, next) => {
+  createCommentById(req.params.article_id, req.body.body, req.body.username)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch((err) => {
       next(err);
