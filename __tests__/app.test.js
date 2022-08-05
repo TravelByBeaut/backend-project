@@ -3,6 +3,7 @@ const app = require("../db/app");
 const data = require("../db/data/test-data");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
+require("jest-sorted");
 
 beforeEach(() => seed(data));
 
@@ -129,15 +130,7 @@ describe("Articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article).toHaveLength(12);
-          expect(article[0].article_id).toBe(3);
-          expect(article[0].title).toEqual(expect.any(String));
-          expect(article[0].topic).toEqual(expect.any(String));
-          expect(article[0].author).toEqual(expect.any(String));
-          expect(article[0].body).toEqual(expect.any(String));
-          expect(article[0].created_at).toEqual(expect.any(String));
-          expect(article[0].votes).toEqual(expect.any(Number));
-          expect(article[0].comment_count).toEqual(expect.any(Number));
+          expect(article).toBeSortedBy("created_at", { descending: true });
         });
     });
     test("sortby sorts any valid column by default desc", () => {
@@ -145,15 +138,7 @@ describe("Articles", () => {
         .get("/api/articles?sort_by=author")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article).toHaveLength(12);
-          expect(article[0].article_id).toBe(4);
-          expect(article[0].title).toEqual(expect.any(String));
-          expect(article[0].topic).toEqual(expect.any(String));
-          expect(article[0].author).toBe("rogersop");
-          expect(article[0].body).toEqual(expect.any(String));
-          expect(article[0].created_at).toEqual(expect.any(String));
-          expect(article[0].votes).toEqual(expect.any(Number));
-          expect(article[0].comment_count).toEqual(expect.any(Number));
+          expect(article).toBeSortedBy("author", { descending: true });
         });
     });
     test("status: 404 when given a non-existent sortby", () => {
@@ -169,15 +154,7 @@ describe("Articles", () => {
         .get("/api/articles?sort_by=title&order_by=ASC")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article).toHaveLength(12);
-          expect(article[0].article_id).toBe(6);
-          expect(article[0].title).toBe("A");
-          expect(article[0].topic).toEqual(expect.any(String));
-          expect(article[0].author).toEqual(expect.any(String));
-          expect(article[0].body).toEqual(expect.any(String));
-          expect(article[0].created_at).toEqual(expect.any(String));
-          expect(article[0].votes).toEqual(expect.any(Number));
-          expect(article[0].comment_count).toEqual(expect.any(Number));
+          expect(article).toBeSortedBy("title", { descending: false });
         });
     });
     test("status: 404 when given a non-existent orderby", () => {
@@ -193,15 +170,7 @@ describe("Articles", () => {
         .get("/api/articles?topic=cats")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article).toHaveLength(1);
-          expect(article[0].article_id).toEqual(expect.any(Number));
-          expect(article[0].title).toEqual(expect.any(String));
-          expect(article[0].topic).toBe("cats");
-          expect(article[0].author).toEqual(expect.any(String));
-          expect(article[0].body).toEqual(expect.any(String));
-          expect(article[0].created_at).toEqual(expect.any(String));
-          expect(article[0].votes).toEqual(expect.any(Number));
-          expect(article[0].comment_count).toEqual(expect.any(Number));
+          expect(article).toBeSortedBy("topic");
         });
     });
     test("status: 404 when given a non-existent topic", () => {
@@ -212,7 +181,7 @@ describe("Articles", () => {
           expect(body.msg).toBe("Query does not exist");
         });
     });
-    test("status: 200 and default queries when given a non-existent topic", () => {
+    test("status: 200 and default queries when given a non-existent query", () => {
       return request(app)
         .get("/api/articles?none=none")
         .expect(200)
