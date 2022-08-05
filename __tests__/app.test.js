@@ -316,4 +316,25 @@ describe("Comments", () => {
         });
     });
   });
+  describe("removeCommentById", () => {
+    test("status: 204 and no content", () => {
+      return request(app).delete("/api/comments/1").expect(204);
+    });
+    test("status: 400 and message when invalid id is given", () => {
+      return request(app)
+        .delete("/api/comments/one")
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toEqual("Bad request");
+        });
+    });
+    test("status: 404 and message when non-existent comment_id is given", () => {
+      return request(app)
+        .delete("/api/comments/999")
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toEqual("Comment_id does not exist");
+        });
+    });
+  });
 });

@@ -6,6 +6,7 @@ const {
   articleDataByDate,
   commentsById,
   createCommentById,
+  deleteCommentById,
 } = require("../models/news.model");
 
 exports.getTopics = (req, res, next) => {
@@ -64,6 +65,16 @@ exports.sendCommentById = (req, res, next) => {
   createCommentById(req.params.article_id, req.body.body, req.body.username)
     .then((comment) => {
       res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.removeCommentById = (req, res, next) => {
+  deleteCommentById(req.params.comment_id)
+    .then(() => {
+      res.send(204);
     })
     .catch((err) => {
       next(err);
