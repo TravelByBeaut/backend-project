@@ -186,7 +186,7 @@ describe("Articles", () => {
         .get("/api/articles?none=none")
         .expect(200)
         .then(({ body }) => {
-          expect(body.article).toHaveLength(12);
+          expect(body.article).toBeSortedBy("created_at", { descending: true });
         });
     });
     test("status:404 sends error message when given a valid but non-existent address", () => {
