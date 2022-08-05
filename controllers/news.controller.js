@@ -3,11 +3,12 @@ const {
   articleById,
   changeVote,
   userData,
-  articleDataByDate,
+  articleDataSorted,
   commentsById,
   createCommentById,
   deleteCommentById,
 } = require("../models/news.model");
+const endpoints = require("../endpoints.json");
 
 exports.getTopics = (req, res, next) => {
   topicData().then((data) => {
@@ -42,7 +43,7 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  articleDataByDate(req.query.sort_by, req.query.order_by, req.query.topic)
+  articleDataSorted(req.query.sort_by, req.query.order_by, req.query.topic)
     .then((article) => {
       res.status(200).send({ article });
     })
@@ -79,4 +80,8 @@ exports.removeCommentById = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.allEndpoints = (req, res, next) => {
+  res.status(200).send(endpoints);
 };

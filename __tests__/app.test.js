@@ -338,3 +338,13 @@ describe("Comments", () => {
     });
   });
 });
+describe("allEndpoints", () => {
+  test("status: 200 and returns endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual(expect.any(Object));
+      });
+  });
+});
