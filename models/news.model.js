@@ -48,7 +48,7 @@ exports.userData = () => {
 exports.articleDataByDate = (
   sortby = "created_at",
   orderby = "desc",
-  topic_filter
+  topic
 ) => {
   const validSorts = [
     "title",
@@ -60,24 +60,36 @@ exports.articleDataByDate = (
     "comment_count",
   ];
   const validOrders = ["ASC", "asc", "DESC", "desc"];
-  const validTopics = ["mitch", "cats"];
-
-  let query = `SELECT articles.*, COUNT(comments.article_id) :: INTEGER AS comment_count
+  return db
+    .query(`SELECT slug FROM topics`)
+    .then(({ rows: topics }) => {
+      let query = `SELECT articles.*, COUNT(comments.article_id) :: INTEGER AS comment_count
   FROM articles
   LEFT JOIN comments ON comments.article_id = articles.article_id`;
-
-  if (validTopics.includes(topic_filter)) {
-    query += ` WHERE articles.topic=${topic_filter}`;
-  }
-  query += ` GROUP BY articles.article_id`;
-
-  if (validSorts.includes(sortby) && validOrders.includes(orderby)) {
-    query += ` ORDER BY ${sortby} ${orderby}`;
-  }
-
-  return db.query(query).then(({ rows: articles }) => {
-    return articles;
-  });
+      const arr = [];
+      const topicArr = [];
+      if (topic) {
+        topics.forEach((item) => {
+          topicArr.push(item.slug);
+        });
+        if (topicArr.includes(topic)) {
+          query += ` WHERE topic=$1`;
+          arr.push(topic);
+        } else {
+          return Promise.reject({ status: 404, msg: "Query does not exist" });
+        }
+      }
+      query += ` GROUP BY articles.article_id`;
+      if (validSorts.includes(sortby) && validOrders.includes(orderby)) {
+        query += ` ORDER BY ${sortby} ${orderby}`;
+      } else {
+        return Promise.reject({ status: 404, msg: "Query does not exist" });
+      }
+      return db.query(query, arr);
+    })
+    .then(({ rows: articles }) => {
+      return articles;
+    });
 };
 
 exports.commentsById = (id) => {

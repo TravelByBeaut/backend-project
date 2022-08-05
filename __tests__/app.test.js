@@ -158,6 +158,14 @@ describe("Articles", () => {
           expect(article[0]).toMatchObject(articleExample);
         });
     });
+    test("status: 404 when given a non-existent sortby", () => {
+      return request(app)
+        .get("/api/articles?sort_by=writer")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Query does not exist");
+        });
+    });
     test("orderby orders by default desc but can also asc", () => {
       const articleExample = {
         article_id: 6,
@@ -176,22 +184,38 @@ describe("Articles", () => {
           expect(article[0]).toMatchObject(articleExample);
         });
     });
-    // test.only("topic_filter filters articles by topic value in query", () => {
-    //   const articleExample = {
-    //     title: "UNCOVERED: catspiracy to bring down democracy",
-    //     topic: "cats",
-    //     author: "rogersop",
-    //     body: "Bastet walks amongst us, and the cats are taking arms!",
-    //     created_at: 1596464040000,
-    //     votes: 0,
-    //   };
-    //   return request(app)
-    //     .get("/api/articles?topic_filter=cats")
-    //     .expect(200)
-    //     .then(({ body: { article } }) => {
-    //       expect(article[0]).toMatchObject(articleExample);
-    //     });
-    // });
+    test("status: 404 when given a non-existent orderby", () => {
+      return request(app)
+        .get("/api/articles?order_by=up")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Query does not exist");
+        });
+    });
+    test("topic filters articles by topic value in query", () => {
+      const articleExample = {
+        title: "UNCOVERED: catspiracy to bring down democracy",
+        topic: "cats",
+        author: "rogersop",
+        body: "Bastet walks amongst us, and the cats are taking arms!",
+        created_at: expect.any(String),
+        votes: 0,
+      };
+      return request(app)
+        .get("/api/articles?topic=cats")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article[0]).toMatchObject(articleExample);
+        });
+    });
+    test("status: 404 when given a non-existent topic", () => {
+      return request(app)
+        .get("/api/articles?topic=none")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Query does not exist");
+        });
+    });
     test("status:404 sends error message when given a valid but non-existent address", () => {
       return request(app)
         .get("/api/articls")
