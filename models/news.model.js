@@ -45,7 +45,7 @@ exports.userData = () => {
   });
 };
 
-exports.articleDataByDate = (
+exports.articleDataSorted = (
   sortby = "created_at",
   orderby = "desc",
   topic

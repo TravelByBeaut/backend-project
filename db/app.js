@@ -8,6 +8,7 @@ const {
   getCommentsById,
   sendCommentById,
   removeCommentById,
+  allEndpoints,
 } = require("../controllers/news.controller");
 
 const app = express();
@@ -22,6 +23,7 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getCommentsById);
 app.post("/api/articles/:article_id/comments", sendCommentById);
 app.delete("/api/comments/:comment_id", removeCommentById);
+app.get("/api", allEndpoints);
 
 app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Invalid address" });
