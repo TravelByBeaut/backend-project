@@ -173,7 +173,7 @@ describe("Articles", () => {
           expect(article[0].article_id).toBe(6);
           expect(article[0].title).toBe("A");
           expect(article[0].topic).toEqual(expect.any(String));
-          expect(article[0].author).toBe("icellusedkars");
+          expect(article[0].author).toEqual(expect.any(String));
           expect(article[0].body).toEqual(expect.any(String));
           expect(article[0].created_at).toEqual(expect.any(String));
           expect(article[0].votes).toEqual(expect.any(Number));
