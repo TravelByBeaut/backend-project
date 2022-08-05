@@ -125,37 +125,35 @@ describe("Articles", () => {
         });
     });
     test("adds sort by functionality default sorts columns by date", () => {
-      const articleExample = {
-        article_id: 3,
-        title: "Eight pug gifs that remind me of mitch",
-        topic: "mitch",
-        author: "icellusedkars",
-        body: "some gifs",
-        created_at: "2020-11-03T09:12:00.000Z",
-        votes: 0,
-        comment_count: 2,
-      };
       return request(app)
         .get("/api/articles")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article[0]).toMatchObject(articleExample);
+          expect(article).toHaveLength(12);
+          expect(article[0].article_id).toBe(3);
+          expect(article[0].title).toEqual(expect.any(String));
+          expect(article[0].topic).toEqual(expect.any(String));
+          expect(article[0].author).toEqual(expect.any(String));
+          expect(article[0].body).toEqual(expect.any(String));
+          expect(article[0].created_at).toEqual(expect.any(String));
+          expect(article[0].votes).toEqual(expect.any(Number));
+          expect(article[0].comment_count).toEqual(expect.any(Number));
         });
     });
     test("sortby sorts any valid column by default desc", () => {
-      const articleExample = {
-        title: "Student SUES Mitch!",
-        topic: "mitch",
-        author: "rogersop",
-        body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
-        created_at: "2020-05-06T01:14:00.000Z",
-        votes: 0,
-      };
       return request(app)
         .get("/api/articles?sort_by=author")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article[0]).toMatchObject(articleExample);
+          expect(article).toHaveLength(12);
+          expect(article[0].article_id).toBe(4);
+          expect(article[0].title).toEqual(expect.any(String));
+          expect(article[0].topic).toEqual(expect.any(String));
+          expect(article[0].author).toBe("rogersop");
+          expect(article[0].body).toEqual(expect.any(String));
+          expect(article[0].created_at).toEqual(expect.any(String));
+          expect(article[0].votes).toEqual(expect.any(Number));
+          expect(article[0].comment_count).toEqual(expect.any(Number));
         });
     });
     test("status: 404 when given a non-existent sortby", () => {
@@ -167,21 +165,19 @@ describe("Articles", () => {
         });
     });
     test("orderby orders by default desc but can also asc", () => {
-      const articleExample = {
-        article_id: 6,
-        title: "A",
-        topic: "mitch",
-        author: "icellusedkars",
-        body: "Delicious tin of cat food",
-        created_at: "2020-10-18T01:00:00.000Z",
-        votes: 0,
-        comment_count: 1,
-      };
       return request(app)
         .get("/api/articles?sort_by=title&order_by=ASC")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article[0]).toMatchObject(articleExample);
+          expect(article).toHaveLength(12);
+          expect(article[0].article_id).toBe(6);
+          expect(article[0].title).toBe("A");
+          expect(article[0].topic).toEqual(expect.any(String));
+          expect(article[0].author).toBe("icellusedkars");
+          expect(article[0].body).toEqual(expect.any(String));
+          expect(article[0].created_at).toEqual(expect.any(String));
+          expect(article[0].votes).toEqual(expect.any(Number));
+          expect(article[0].comment_count).toEqual(expect.any(Number));
         });
     });
     test("status: 404 when given a non-existent orderby", () => {
@@ -193,19 +189,19 @@ describe("Articles", () => {
         });
     });
     test("topic filters articles by topic value in query", () => {
-      const articleExample = {
-        title: "UNCOVERED: catspiracy to bring down democracy",
-        topic: "cats",
-        author: "rogersop",
-        body: "Bastet walks amongst us, and the cats are taking arms!",
-        created_at: expect.any(String),
-        votes: 0,
-      };
       return request(app)
         .get("/api/articles?topic=cats")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article[0]).toMatchObject(articleExample);
+          expect(article).toHaveLength(1);
+          expect(article[0].article_id).toEqual(expect.any(Number));
+          expect(article[0].title).toEqual(expect.any(String));
+          expect(article[0].topic).toBe("cats");
+          expect(article[0].author).toEqual(expect.any(String));
+          expect(article[0].body).toEqual(expect.any(String));
+          expect(article[0].created_at).toEqual(expect.any(String));
+          expect(article[0].votes).toEqual(expect.any(Number));
+          expect(article[0].comment_count).toEqual(expect.any(Number));
         });
     });
     test("status: 404 when given a non-existent topic", () => {
@@ -214,6 +210,14 @@ describe("Articles", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Query does not exist");
+        });
+    });
+    test("status: 200 and default queries when given a non-existent topic", () => {
+      return request(app)
+        .get("/api/articles?none=none")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toHaveLength(12);
         });
     });
     test("status:404 sends error message when given a valid but non-existent address", () => {
