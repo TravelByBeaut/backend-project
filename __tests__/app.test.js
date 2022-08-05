@@ -3,6 +3,7 @@ const app = require("../db/app");
 const data = require("../db/data/test-data");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
+require("jest-sorted");
 
 beforeEach(() => seed(data));
 
@@ -122,6 +123,70 @@ describe("Articles", () => {
             expect(article.votes).toEqual(expect.any(Number));
             expect(article.comment_count).toEqual(expect.any(Number));
           });
+        });
+    });
+    test("adds sort by functionality default sorts columns by date", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("sortby sorts any valid column by default desc", () => {
+      return request(app)
+        .get("/api/articles?sort_by=author")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toBeSortedBy("author", { descending: true });
+        });
+    });
+    test("status: 404 when given a non-existent sortby", () => {
+      return request(app)
+        .get("/api/articles?sort_by=writer")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Query does not exist");
+        });
+    });
+    test("orderby orders by default desc but can also asc", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title&order_by=ASC")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toBeSortedBy("title", { descending: false });
+        });
+    });
+    test("status: 404 when given a non-existent orderby", () => {
+      return request(app)
+        .get("/api/articles?order_by=up")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Query does not exist");
+        });
+    });
+    test("topic filters articles by topic value in query", () => {
+      return request(app)
+        .get("/api/articles?topic=cats")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toBeSortedBy("topic");
+        });
+    });
+    test("status: 404 when given a non-existent topic", () => {
+      return request(app)
+        .get("/api/articles?topic=none")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Query does not exist");
+        });
+    });
+    test("status: 200 and default queries when given a non-existent query", () => {
+      return request(app)
+        .get("/api/articles?none=none")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toBeSortedBy("created_at", { descending: true });
         });
     });
     test("status:404 sends error message when given a valid but non-existent address", () => {

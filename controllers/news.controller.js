@@ -41,7 +41,7 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  articleDataByDate()
+  articleDataByDate(req.query.sort_by, req.query.order_by, req.query.topic)
     .then((article) => {
       res.status(200).send({ article });
     })
