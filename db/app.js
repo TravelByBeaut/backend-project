@@ -1,3 +1,5 @@
+const cors = require("cors");
+
 const express = require("express");
 
 const {
@@ -13,6 +15,7 @@ const {
 } = require("../controllers/news.controller");
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 
