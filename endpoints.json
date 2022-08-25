@@ -84,5 +84,10 @@
   "DELETE /api/comments/:comment_id": {
     "description": "deletes a comment by the given id",
     "exampleResponse": "204"
+  },
+
+  "GET /*": {
+    "description": "sends error message",
+    "exampleResponse": "Invalid address"
   }
 }
