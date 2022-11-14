@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const app = require("../db/app");
+const app = require("../app");
 
 exports.topicData = () => {
   return db.query(`SELECT * FROM topics;`).then(({ rows: topics }) => {

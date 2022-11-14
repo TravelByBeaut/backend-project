@@ -12,7 +12,7 @@ const {
   sendCommentById,
   removeCommentById,
   allEndpoints,
-} = require("../controllers/news.controller");
+} = require("./controllers/news.controller");
 
 const app = express();
 app.use(cors());
